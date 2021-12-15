@@ -1,11 +1,12 @@
-// import { request } from 'umi';
-import request, { extend } from 'umi-request';
-import { message } from 'antd';
-import { FormValues } from './data.d';
+// @ts-nocheck
+import { extend } from 'umi-request';
+import axios from 'axios';
 
 interface codeMapValues {
   [name: string]: any;
 }
+
+const baseUrl = 'http://123.57.195.68:8961/';
 
 const errorHandler = function(error: any) {
   const codeMap: codeMapValues = {
@@ -19,106 +20,230 @@ const errorHandler = function(error: any) {
     console.log(error.data);
     console.log(error.request.options.method);
     if (error.response.status > 400) {
-      message.error(
-        error.data.message
-          ? codeMap[error.request.options.method] + error.data.message
-          : codeMap[error.request.options.method] + error.data,
-      );
+      // message.error(
+      //   error.data.message
+      //     ? codeMap[error.request.options.method] + error.data.message
+      //     : codeMap[error.request.options.method] + error.data,
+      // );
     } else {
-      message.success(error.data);
+      // message.success(error.data);
     }
   } else {
-    message.error('网络错误');
+    // message.error('网络错误');
   }
   throw error;
 };
-const extendRequest = extend({ errorHandler });
+const extendRequest = extend({
+  timeout: 1000,
+  headers: {
+    // "Access-Control-Allow-Origin": "*"
+  },
+  errorHandler,
+});
 
-const getUsersList = async ({
-  page,
-  per_page,
-}: {
-  page: number;
-  per_page: number;
-}) => {
-  return extendRequest(
-    `http://public-api-v1.aspirantzhang.com/users?page=${page}&per_page=${per_page}`,
-    {
-      method: 'get',
-    },
-  )
+// 磁盘初始化
+const distSpaceInit = async () => {
+  return extendRequest(`${baseUrl}DiskSpaceInit`, {
+    method: 'post',
+  })
     .then(response => {
-      // console.log(response);
       return response;
     })
     .catch(error => {
       return false;
     });
-  const list = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ];
-  return list;
 };
-const editRecord = async ({
-  id,
-  values,
-}: {
-  id: number;
-  values: FormValues;
-}) => {
-  return extendRequest(`http://public-api-v1.aspirantzhang.com/users/${id}`, {
-    method: 'put',
-    data: values,
-  })
-    .then(response => {
-      return true;
-    })
-    .catch(error => {
-      return false;
-    });
-};
-const addRecord = async ({ values }: { values: FormValues }) => {
-  return extendRequest(`http://public-api-v1.aspirantzhang.com/users`, {
+
+// 磁盘打印
+const getDistState = async () => {
+  return extendRequest(`${baseUrl}DiskState`, {
     method: 'post',
-    data: values,
   })
     .then(response => {
-      return true;
+      return response;
     })
     .catch(error => {
+      console.log(error);
       return false;
     });
 };
-const deleteRecord = async ({ id }: { id: number }) => {
-  console.log(id);
-  return extendRequest(`http://public-api-v1.aspirantzhang.com/users/${id}`, {
-    method: 'delete',
-  })
+
+// 显示目录结构
+const displayFileSystemStructure = async ({ foldername, num }) => {
+  return extendRequest(
+    `${baseUrl}DisplayFileSystemStructure?foldername=${foldername}&num=${num}`,
+    {
+      method: 'get',
+    },
+  )
     .then(response => {
-      return true;
+      return response;
     })
     .catch(error => {
+      console.log(error);
       return false;
     });
 };
-export { getUsersList, editRecord, addRecord, deleteRecord };
+
+// 新建目录
+const createFolder = async ({ current_name, name, num }) => {
+  return extendRequest(
+    `${baseUrl}DirectoryCreate?parentFolderName=${current_name}&thisFolderName=${name}&num=${num}`,
+    {
+      method: 'get',
+      // data:{
+      //   parentFolderName: current_name,
+      //   thisFolderName:name,
+      //   num:num
+      // }
+    },
+  )
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+};
+
+// 删除目录
+const deleteFolder = async ({ delete_name, num }) => {
+  return extendRequest(
+    `${baseUrl}DirectoryDelete?folderName=${delete_name}&num=${num}`,
+    {
+      method: 'get',
+      // data:{
+      //   folderName:delete_name,
+      //   num:num
+      // }
+    },
+  )
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+};
+
+// 新建文件
+const createFile = async ({ current_folder_name, file_name, user, num }) => {
+  return extendRequest(
+    `${baseUrl}FileMake?directoryName=${current_folder_name}&fileName=${file_name}&owner=${user}&num=${num}&content=''`,
+    {
+      method: 'get',
+      // data:{
+      //   directoryName: current_folder_name,
+      //   filename: file_name,
+      //   owner: user,
+      //   num:num,
+      //   content:''
+      // }
+    },
+  )
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+};
+
+// 删除文件
+const deleteFile = async ({ delete_name }) => {
+  return extendRequest(`${baseUrl}FileDelete?fileName=${delete_name}`, {
+    method: 'get',
+    // data:{
+    //   fileName:delete_name
+    // }
+  })
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+};
+
+// 修改文件内容
+const changeFileContent = async ({ change_file_name, content }) => {
+  return extendRequest(
+    `${baseUrl}EditFileContent?content=${content}&fileName=${change_file_name}`,
+    {
+      method: 'get',
+      // data:{
+      //   content: content,
+      //   fileName: change_file_name
+      // }
+    },
+  )
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+};
+
+// 显示文件内容
+const readFileContent = async ({ file_name }) => {
+  return axios
+    .get(`${baseUrl}ReadFileContent?fileName=${file_name}`, { timeout: 300000 })
+    .then((resp: any) => {
+      console.log(resp.data);
+      return resp.data;
+    })
+    .catch((error: any) => {
+      console.error(error);
+      return false;
+    });
+  // return new Promise((resolve,reject)=>{
+  //   setTimeout(() => {
+  //     resolve('233')
+  //   }, 2000);
+  // })
+  return extendRequest(`${baseUrl}ReadFileContent?fileName=${file_name}`, {
+    method: 'get',
+    // data:{
+    //   fileName: file_name
+    // }
+  })
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+};
+
+// 获取内存块状态
+const getBlock = async () => {
+  return extendRequest(`${baseUrl}block/returnTemp`, {
+    method: 'get',
+  })
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+};
+export {
+  distSpaceInit,
+  getDistState,
+  displayFileSystemStructure,
+  createFolder,
+  deleteFolder,
+  createFile,
+  deleteFile,
+  changeFileContent,
+  readFileContent,
+  getBlock,
+};

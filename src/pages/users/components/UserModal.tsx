@@ -1,7 +1,8 @@
-import React, { useEffect, FC } from "react";
-import moment from "moment";
-import { Modal, Button, Form, Input, DatePicker, Switch } from "antd";
-import { SingleUserType, FormValues } from "../data.d";
+// @ts-nocheck
+import React, { useEffect, FC } from 'react';
+import moment from 'moment';
+import { Modal, Button, Form, Input, DatePicker, Switch } from 'antd';
+import { SingleUserType, FormValues } from '../data.d';
 
 interface UserModalProps {
   modalVisible: boolean;
@@ -11,7 +12,7 @@ interface UserModalProps {
   confirmLoading: boolean;
 }
 
-const UserModal: FC<UserModalProps> = (props) => {
+const UserModal: FC<UserModalProps> = props => {
   let [form] = Form.useForm();
   let { record, modalVisible, handleCancel, onFinish, confirmLoading } = props;
   useEffect(() => {
@@ -30,12 +31,12 @@ const UserModal: FC<UserModalProps> = (props) => {
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+    console.log('Failed:', errorInfo);
   };
 
   return (
     <Modal
-      title={record ? "编辑" + record.id : "添加"}
+      title={record ? '编辑' + record.id : '添加'}
       visible={modalVisible}
       onOk={onOk}
       onCancel={handleCancel}
@@ -53,7 +54,7 @@ const UserModal: FC<UserModalProps> = (props) => {
         <Form.Item
           label="姓名"
           name="name"
-          rules={[{ required: true, message: "Please input your name!" }]}
+          rules={[{ required: true, message: 'Please input your name!' }]}
         >
           <Input />
         </Form.Item>
