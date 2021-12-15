@@ -23,8 +23,8 @@ import {
   readFileContent,
 } from '../../service';
 import styles from './index.less';
-import FileTwoTone from '@ant-design/icons/lib/icons/FileTwoTone';
-import FolderOpenTwoTone from '@ant-design/icons/lib/icons/FolderOpenTwoTone';
+import FileFilled from '@ant-design/icons/lib/icons/FileFilled';
+import FolderOpenFilled from '@ant-design/icons/lib/icons/FolderOpenFilled';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -153,6 +153,9 @@ function Index(props: Props) {
       <div>
         {curCatalog.length > 1 && (
           <Button
+            type="primary"
+            shape="round"
+            style={{ marginRight: 10 }}
             onClick={() => {
               let copyCurCatalog = [...curCatalog];
               copyCurCatalog.pop();
@@ -164,6 +167,9 @@ function Index(props: Props) {
           </Button>
         )}
         <Button
+          type="primary"
+          shape="round"
+          style={{ marginRight: 10 }}
           onClick={() => {
             setNewFolderVisible(true);
           }}
@@ -171,6 +177,9 @@ function Index(props: Props) {
           新建目录
         </Button>
         <Button
+          type="primary"
+          shape="round"
+          style={{ marginRight: 10 }}
           onClick={() => {
             setNewFileVisible(true);
           }}
@@ -179,6 +188,9 @@ function Index(props: Props) {
         </Button>
         {curStatus === 1 && (
           <Button
+            type="primary"
+            shape="round"
+            style={{ marginRight: 10 }}
             onClick={() => {
               openFolder();
             }}
@@ -188,6 +200,9 @@ function Index(props: Props) {
         )}
         {curStatus === 1 && (
           <Button
+            type="primary"
+            shape="round"
+            style={{ marginRight: 10 }}
             onClick={() => {
               onDeleteFolder();
             }}
@@ -197,6 +212,9 @@ function Index(props: Props) {
         )}
         {curStatus === 2 && (
           <Button
+            type="primary"
+            shape="round"
+            style={{ marginRight: 10 }}
             onClick={() => {
               let dispatchingFileCopy = [...dispatchingFile];
               const index =
@@ -213,11 +231,14 @@ function Index(props: Props) {
               dispatchFile(index);
             }}
           >
-            文件调入内存
+            读文件
           </Button>
         )}
         {curStatus === 2 && (
           <Button
+            type="primary"
+            shape="round"
+            style={{ marginRight: 10 }}
             onClick={async () => {
               setShowChangeFileVisible(true);
               setFileContent('');
@@ -228,6 +249,9 @@ function Index(props: Props) {
         )}
         {curStatus === 2 && (
           <Button
+            type="primary"
+            shape="round"
+            style={{ marginRight: 10 }}
             onClick={() => {
               onDeleteFile();
             }}
@@ -238,7 +262,12 @@ function Index(props: Props) {
       </div>
 
       <div
-        style={{ display: 'flex', justifyContent: 'space-between', width: 600 }}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: 600,
+          marginTop: 15,
+        }}
       >
         {/* 文件list */}
         <Radio.Group onChange={onSelect}>
@@ -247,14 +276,15 @@ function Index(props: Props) {
               if (folderName) {
                 return (
                   <Radio key={key} value={`folderName:${folderName}`}>
-                    <FolderOpenTwoTone />
+                    <FolderOpenFilled />
+                    &nbsp;&nbsp;
                     {folderName}
                   </Radio>
                 );
               } else {
                 return (
                   <Radio key={key} value={`filename:${filename}`}>
-                    <FileTwoTone />
+                    <FileFilled /> &nbsp;&nbsp;
                     {filename}
                   </Radio>
                 );

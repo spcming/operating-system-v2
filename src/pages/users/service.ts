@@ -6,7 +6,7 @@ interface codeMapValues {
   [name: string]: any;
 }
 
-const baseUrl = 'http://123.57.195.68:8961/';
+const baseUrl = 'http://47.243.4.234:8181/';
 
 const errorHandler = function(error: any) {
   const codeMap: codeMapValues = {
